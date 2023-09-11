@@ -7,13 +7,13 @@ function App() {
   const [count, setCount] = useState(0);
 
   const date = new Date();
-  date.setDate(date.getDate() + count);  
+  date.setDate(date.getDate() + count);
 
   function getMessageFromCounter() {
-    let todayMsg = <>Today is {date.toDateString()}</>;
+    let todayMsg = <Fragment>{date.toDateString()}</Fragment>;
 
     if (count === 0) {
-      return todayMsg;
+      return <Fragment>Today is {todayMsg}</Fragment>;
     }
 
     if (count > 0) {
@@ -31,6 +31,11 @@ function App() {
     );
   }
 
+  function handleReset() {
+    setCount(0);
+    setStep(1);
+  }
+
   return (
     <div
       style={{
@@ -42,28 +47,37 @@ function App() {
       className="counters"
     >
       <div className="counter">
-        <button
-          className="btn"
-          onClick={() => step > 1 && setStep((s) => s - 1)}
-        >
-          -
-        </button>
-        <span>Step: {step}</span>
-        <button className="btn" onClick={() => setStep((s) => s + 1)}>
-          +
-        </button>
+        <input
+          type="range"
+          min={0}
+          max={10}
+          value={step}
+          onChange={(e) => setStep(Number(e.target.value))}
+        />
+        <span>{step}</span>
       </div>
       <div className="counter">
         <button className="btn" onClick={() => setCount((c) => c - step)}>
           -
         </button>
-        <span>Count: {count}</span>
+        <input
+          type="number"
+          value={count}
+          onChange={(e) => setCount(Number(e.target.value))}
+          style={{ padding: "0.5rem", margin: "0 1rem" }}
+        />
         <button className="btn" onClick={() => setCount((c) => c + step)}>
           +
         </button>
       </div>
 
       <div className="message">{getMessageFromCounter()}</div>
+
+      {(count !== 0 || step !== 1) ? (
+        <button className="btn" onClick={handleReset}>
+          Reset
+        </button>
+      ) : null}
     </div>
   );
 }
